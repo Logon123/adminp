@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #010c18; 
+            margin-bottom: 0;
+        }
+        .navbar .nav-link {
+            color: white;
+            margin: 0 10px;
+        }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10px;
+        }
+        .profile-container img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .table-heading {
+            background-color: blue;
+            color: white;
+            margin: 0px;
+            padding: 5px;
+        }
+        main {
+            padding: 0; /* Remove extra padding */
+        }
+        .info-box {
+            border: 1px solid #007bff;
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="#" id="home"><i class="bi bi-house hm" style="color: rgb(245, 233, 247);"></i> Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="report"><i class="bi bi-file-earmark-text" style="color: rgb(245, 233, 247);"></i> Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="transaction"><i class="bi bi-cash" style="color: rgb(245, 233, 247);;"></i> Transaction</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="sale"><i class="bi bi-cart" style="color: rgb(245, 233, 247);"></i> Sale</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="items"><i class="bi bi-box" style="color: rgb(245, 233, 247);"></i> Items</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="customers"><i class="bi bi-person" style="color: rgb(245, 233, 247);"></i> Customers</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="team"><i class="bi bi-people" style="color: rgb(245, 233, 247);"></i> Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="settings"><i class="bi bi-gear" style="color: rgb(245, 233, 247);"></i> Settings</a></li>
+            </ul>
+        </div>
+        <div class="profile-container">
+            <img src="img/profile-.png" alt="Profile Photo">
+            <h5 style="color: #f8f9fa;">Yogesh Kumar</h5>
+        </div>
+    </nav>
+
+    <!-- Add this within your main content area -->
+<main role="main" class="container-fluid">
+    <div id="content-area">
+        <h2 class="table-heading" id="table-title">Welcome</h2>
+        <div id="home-content" class="home-data d-none">
+            <h3>Welcome Back. Here's your business at a glance.</h3>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 highlight border border-primary mx-2">
+                        <h5>Gross Sales:</h5>
+                        <div class="font-weight-bold">Rs. 24,456</div>
+                    </div>
+                    <div class="col-lg-3 highlight border border-primary">
+                        <h5>Total Transactions:</h5>
+                        <div class="font-weight-bold">No. 245</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 mx-2">
+                <ul id="payment-types" class="font-weight-bold">Payment Types:
+                    <li>Card</li>
+                    <li>Cash</li>
+                    <li>Other</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Content for report and transaction sections -->
+        <div class="d-none" id="report-content">
+            <h3>Report Details</h3>
+            <div class="container-fluid">
+                <div class="row" id="report-details"></div>
+            </div>
+        </div>
+
+        <div class="d-none" id="transaction-content">
+            <h3>Transaction Details</h3>
+            <div class="container-fluid">
+                <div class="row" id="transaction-details"></div>
+            </div>
+        </div>
+
+        <table class="table d-none" id="data-table">
+            <thead class="table-heading">
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr>
+                    <td colspan="3" class="text-center">Select a menu to view data</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const menuItems = document.querySelectorAll('.nav-link');
+        const tableTitle = document.getElementById('table-title');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                const selectedMenu = event.target.id;
+
+                // Set the table title based on the selected menu
+                tableTitle.innerText = selectedMenu.charAt(0).toUpperCase() + selectedMenu.slice(1);
+
+                // Optionally, you can also log the selected menu or handle it as needed
+                console.log(selectedMenu);
+
+                // Hide all content sections
+                document.querySelectorAll('#home-content, #report-content, #transaction-content, #data-table').forEach(section => {
+                    section.classList.add('d-none');
+                });
+
+                // You can also add specific actions for each menu item if needed
+            });
+        });
+    });
+</script>
+
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- <script src="/js/barcode.js"></script> -->
+</body>
+</html>

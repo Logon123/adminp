@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-.png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0px;
+        }
+        .hm {
+            height: 150px;
+        }
+        .navbar {
+            background-color: #001f3f; /* Navy blue */
+            margin-bottom: 0;
+        }
+        .navbar .nav-link {
+            color: white;
+            margin: 0 10px;
+        }
+        .sidebar {
+            background-color: black;
+            color: white;
+            padding: 15px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        .sidebar .nav-link {
+            color: white;
+            margin: 5px 0;
+        }
+        .table-heading {
+            background-color: purple;
+            color: white;
+            margin: 0px;
+            padding: 5px;
+        }
+        .home-data {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .highlight {
+            color: #dc3545; /* Bootstrap danger color */
+            font-weight: bold;
+            background-color: rgb(206, 212, 210);
+            
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">Dash Board</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="#" id="home"><i class="bi bi-house hm" style="color: rgb(245, 233, 247);"></i> Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="report"><i class="bi bi-file-earmark-text" style="color: rgb(223, 18, 241);"></i> Report</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="transaction"><i class="bi bi-cash" style="color: rgb(223, 18, 241);"></i> Transaction</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="sale"><i class="bi bi-cart" style="color: rgb(245, 233, 247);"></i> Sale</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="items"><i class="bi bi-box" style="color: rgb(9, 150, 91); "></i> Items</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="customers"><i class="bi bi-person" style="color: rgb(223, 18, 241);"></i> Customers</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="team"><i class="bi bi-people" style="color: rgb(79, 134, 141);"></i> Team</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="settings"><i class="bi bi-gear" style="color: rgb(245, 233, 247);"></i> Settings</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 sidebar">
+            <h4>Yogesh Kumar</h4>
+            <img src="img/profile-.png" alt="Profile Photo" class="img-fluid rounded-circle mb-3" style="width: 100px;">
+            <div class="nav flex-column nav-pills">
+                <a class="nav-link" href="#" id="home-sidebar">Home</a>
+                <a class="nav-link" href="#" id="gift-sidebar">Gift Card</a>
+                <a class="nav-link" href="#" id="Invoice-sidebar">Invoice</a>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-1">
+            <div id="content-area">
+                <h2 class="table-heading" id="table-title">Welcome</h2>
+                <div id="home-content" class="home-data d-none">
+                    <h3>Welcome back. Here's your business at a glance.</h3>
+                    
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-3 highlight border border-primary mx-2">
+                                <h5>Gross Sales:</h5>
+                                <div>Rs. 24,456</div>
+                            </div> &nbsp;
+                            <div class="col-lg-3 highlight border border-primary">
+                                <h5>Total Transactions:</h5>
+                                <div>No. 245</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <h4>Payment Types:</h4>
+                    <ul id="payment-types">
+                        <li>Card</li>
+                        <li>Cash</li>
+                        <li>Other</li>
+                    </ul>
+                </div>
+                <table class="table d-none" id="data-table">
+                    <thead class="table-heading">
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr>
+                            <td colspan="3" class="text-center">Select a menu to view data</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const menuItems = document.querySelectorAll('.nav-link');
+    const homeContent = document.getElementById('home-content');
+    const paymentTypes = document.getElementById('payment-types');
+    const dataTable = document.getElementById('data-table');
+    const tableBody = document.getElementById('table-body');
+    const tableTitle = document.getElementById('table-title');
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', function (event) {
+            event.preventDefault();
+            const selectedMenu = event.target.id;
+
+            // Show home content only for the home menu
+            if (selectedMenu === 'home' || selectedMenu === 'home-sidebar') {
+                homeContent.classList.remove('d-none'); // Show home content
+                paymentTypes.classList.remove('d-none'); // Show payment types
+                dataTable.classList.add('d-none'); // Hide data table
+                tableBody.innerHTML = ''; // Clear table body
+            } else {
+                homeContent.classList.add('d-none'); // Hide home content
+                paymentTypes.classList.add('d-none'); // Hide payment types
+                dataTable.classList.remove('d-none'); // Show the data table
+                tableBody.innerHTML = ''; // Clear table body
+
+                // Simulate data for each menu item
+                const data = {
+                    report: [
+                        { id: 1, name: 'Report 1', details: 'Details 1' },
+                        { id: 2, name: 'Report 2', details: 'Details 2' }
+                    ],
+                    transaction: [
+                        { id: 1, name: 'Transaction 1', details: 'Details 1' },
+                        { id: 2, name: 'Transaction 2', details: 'Details 2' }
+                    ],
+                    sale: [
+                        { id: 1, name: 'Sale 1', details: 'Details 1' },
+                        { id: 2, name: 'Sale 2', details: 'Details 2' }
+                    ],
+                    items: [
+                        { id: 1, name: 'Item 1', details: 'Details 1' },
+                        { id: 2, name: 'Item 2', details: 'Details 2' }
+                    ],
+                    customers: [
+                        { id: 1, name: 'Customer 1', details: 'Details 1' },
+                        { id: 2, name: 'Customer 2', details: 'Details 2' }
+                    ],
+                    team: [
+                        { id: 1, name: 'Team Member 1', details: 'Details 1' },
+                        { id: 2, name: 'Team Member 2', details: 'Details 2' }
+                    ],
+                    settings: [
+                        { id: 1, name: 'Setting 1', details: 'Details 1' },
+                        { id: 2, name: 'Setting 2', details: 'Details 2' }
+                    ]
+                };
+
+                // Populate the table based on the selected menu
+                if (data[selectedMenu]) {
+                    tableTitle.innerText = selectedMenu.charAt(0).toUpperCase() + selectedMenu.slice(1);
+                    data[selectedMenu].forEach(item => {
+                        const row = `<tr>
+                            <td>${item.id}</td>
+                            <td><i class="bi bi-info-circle"></i> ${item.name}</td>
+                            <td>${item.details}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center">No data available</td></tr>';
+                }
+            }
+        });
+    });
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
