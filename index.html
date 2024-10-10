@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>AdminPanel</title>
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <style>
@@ -37,6 +38,7 @@
             color: white;
             margin: 0px;
             padding: 5px;
+            width: 100%;
         }
         main {
             padding: 0; /* Remove extra padding */
@@ -47,6 +49,16 @@
             padding: 15px;
             border-radius: 5px;
             margin: 10px 0;
+        }
+
+        .dropdown-menu {
+            background-color: #010c18; /* Same as navbar background */
+        }
+        .dropdown-item {
+            color: white;
+        }
+        .dropdown-item:hover {
+            background-color: #007bff; /* Highlight on hover */
         }
     </style>
 </head>
@@ -69,9 +81,19 @@
                 <li class="nav-item"><a class="nav-link" href="#" id="settings"><i class="bi bi-gear" style="color: rgb(245, 233, 247);"></i> Settings</a></li>
             </ul>
         </div>
-        <div class="profile-container">
+        <!-- <div class="profile-container">
             <img src="img/profile-.png" alt="Profile Photo">
             <h5 style="color: #f8f9fa;">Yogesh Kumar</h5>
+        </div> -->
+
+        <div class="profile-container dropdown">
+            <img src="img/profile-.png" alt="Profile Photo" id="profile-pic" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+            <h5 class="dropdown-toggle" style="color: #f8f9fa;" id="user-name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Yogesh Kumar</h5>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" id="profile-settings">Profile Settings</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" id="logout">Logout</a>
+            </div>
         </div>
     </nav>
 
@@ -93,14 +115,29 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 mx-2">
-                <ul id="payment-types" class="font-weight-bold">Payment Types:
-                    <li>Card</li>
-                    <li>Cash</li>
-                    <li>Other</li>
-                </ul>
+        
+            <div class="container-fluid">
+                <h5>Payment Types:</h5>
+                <div class="row">
+                    <div class="col-lg-6 mb-3">
+                        <div class="info-box border p-2">
+                            <h6>Card:</h6>
+                            <span class="font-weight-bold">Rs. 15,000</span>
+                        </div>
+                        <div class="info-box border p-2">
+                            <h6>Cash:</h6>
+                            <span class="font-weight-bold">Rs. 4,500</span>
+                        </div>
+                        <div class="info-box border p-2">
+                            <h6>Other:</h6>
+                            <span class="font-weight-bold">Rs. 3,456</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <canvas id="paymentChart"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
 
         <!-- Content for report and transaction sections -->
         <div class="d-none" id="report-content">
@@ -135,36 +172,185 @@
 </main>
 
 <script>
+    // New Add
+
     document.addEventListener('DOMContentLoaded', function () {
-        const menuItems = document.querySelectorAll('.nav-link');
-        const tableTitle = document.getElementById('table-title');
+    const menuItems = document.querySelectorAll('.nav-link');
+    const contentArea = document.getElementById('content-area');
 
-        menuItems.forEach(item => {
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                const selectedMenu = event.target.id;
+    menuItems.forEach(item => {
+        item.addEventListener('click', function (event) {
+            event.preventDefault();
+            const selectedMenu = event.target.id;
 
-                // Set the table title based on the selected menu
-                tableTitle.innerText = selectedMenu.charAt(0).toUpperCase() + selectedMenu.slice(1);
-
-                // Optionally, you can also log the selected menu or handle it as needed
-                console.log(selectedMenu);
-
-                // Hide all content sections
-                document.querySelectorAll('#home-content, #report-content, #transaction-content, #data-table').forEach(section => {
-                    section.classList.add('d-none');
-                });
-
-                // You can also add specific actions for each menu item if needed
-            });
+            // Load the corresponding HTML page into the content area
+            loadPage(selectedMenu);
         });
     });
+
+    function loadPage(menu) {
+        fetch(`${menu}.html`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                contentArea.innerHTML = data; // Load the new content
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    }
+});
+
+    // Close Add New Code
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const menuItems = document.querySelectorAll('.nav-link');
+    const tableTitle = document.getElementById('table-title');
+    const tableBody = document.getElementById('table-body');
+    const homeContent = document.getElementById('home-content');
+    const reportContent = document.getElementById('report-content');
+    const transactionContent = document.getElementById('transaction-content');
+    const dataTable = document.getElementById('data-table');
+
+    // Sample data for other sections
+    const data = {
+        sale: [
+            { id: 1, name: 'Sale 1', details: 'Details 1' },
+            { id: 2, name: 'Sale 2', details: 'Details 2' }
+        ],
+        items: [
+            { id: 1, name: 'Item 1', details: 'Details 1' },
+            { id: 2, name: 'Item 2', details: 'Details 2' }
+        ],
+        customers: [
+            { id: 1, name: 'Customer 1', details: 'Details 1' },
+            { id: 2, name: 'Customer 2', details: 'Details 2' }
+        ],
+        team: [
+            { id: 1, name: 'Team Member 1', details: 'Details about member 1' },
+            { id: 2, name: 'Team Member 2', details: 'Details about member 2' }
+        ],
+        settings: [
+            { id: 1, name: 'Setting 1', details: 'Details about setting 1' },
+            { id: 2, name: 'Setting 2', details: 'Details about setting 2' }
+        ]
+    };
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', function (event) {
+            event.preventDefault();
+            const selectedMenu = event.target.id;
+
+            // Set the table title based on the selected menu
+            tableTitle.innerText = selectedMenu.charAt(0).toUpperCase() + selectedMenu.slice(1);
+            tableBody.innerHTML = ''; // Clear previous content
+
+            // Hide all contents initially
+            homeContent.classList.add('d-none');
+            reportContent.classList.add('d-none');
+            transactionContent.classList.add('d-none');
+            dataTable.classList.add('d-none'); // Hide data table
+
+            // Handle the home menu differently
+            if (selectedMenu === 'home') {
+                homeContent.classList.remove('d-none');
+            } else if (selectedMenu === 'report') {
+                reportContent.classList.remove('d-none');
+                document.getElementById('report-details').innerHTML = ''; // Clear previous report details
+
+                // Populate report details dynamically
+                const reportData = [
+                    { id: 1, name: 'Report 1', details: 'Details 1' },
+                    { id: 2, name: 'Report 2', details: 'Details 2' }
+                ];
+                reportData.forEach(item => {
+                    const detailDiv = `<div class="col-lg-6"><div class="info-box"><h5>${item.name}</h5><p>${item.details}</p></div></div>`;
+                    document.getElementById('report-details').innerHTML += detailDiv;
+                });
+            } else if (selectedMenu === 'transaction') {
+                transactionContent.classList.remove('d-none');
+                document.getElementById('transaction-details').innerHTML = ''; // Clear previous transaction details
+
+                // Populate transaction details dynamically
+                const transactionData = [
+                    { id: 1, name: 'Transaction 1', details: 'Details 1' },
+                    { id: 2, name: 'Transaction 2', details: 'Details 2' }
+                ];
+                transactionData.forEach(item => {
+                    const detailDiv = `<div class="col-lg-6"><div class="info-box"><h5>${item.name}</h5><p>${item.details}</p></div></div>`;
+                    document.getElementById('transaction-details').innerHTML += detailDiv;
+                });
+            } else {
+                dataTable.classList.remove('d-none'); // Show data table
+
+                // Populate the table based on the selected menu
+                if (data[selectedMenu]) {
+                    data[selectedMenu].forEach(item => {
+                        const row = `<tr>
+                            <td>${item.id}</td>
+                            <td><i class="bi bi-info-circle"></i> ${item.name}</td>
+                            <td>${item.details}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center">No data available</td></tr>';
+                }
+            }
+        });
+    });
+});
+
+
+
+
+    
+    
+    
+ // Your existing JavaScript code here
+ const paymentData = {
+            labels: ['Card', 'Cash', 'Other'],
+            datasets: [{
+                data: [15000, 4500, 3456],
+                backgroundColor: [
+                    '#007bff', // Card
+                    '#28a745', // Cash
+                    '#ffc107'  // Other
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const ctx = document.getElementById('paymentChart').getContext('2d');
+        const paymentChart = new Chart(ctx, {
+            type: 'pie',
+            data: paymentData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Payment Types Distribution'
+                    }
+                }
+            }
+        });
+
+
 </script>
 
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- <script src="/js/barcode.js"></script> -->
+    <script src="/js/barcode.js"></script>
 </body>
 </html>
