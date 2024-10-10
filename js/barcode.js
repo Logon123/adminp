@@ -1,45 +1,54 @@
-// Chart
-const dataBarHorizontal = {
-    type: 'bar',
-    data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'Traffic',
-          data: [30, 15, 62, 65, 61, 65, 40],
-        },
+
+
+  // Payment data
+const paymentData = {
+  labels: ['Card', 'Cash', 'Other'],
+  datasets: [{
+      data: [10000, 8000, 6456], // Corresponding amounts
+      backgroundColor: [
+          '#007bff', // Card
+          '#28a745', // Cash
+          '#ffc107'  // Other
       ],
-    },
-  };
-  
-  const optionsBarHorizontal = {
-    options: {
-      indexAxis: 'y',
-      scales: {
-        x: {
-          stacked: true,
-          grid: {
-            display: true,
-            borderDash: [2],
-            zeroLineColor: 'rgba(0,0,0,0)',
-            zeroLineBorderDash: [2],
-            zeroLineBorderDashOffset: [2],
+      hoverOffset: 4
+  }]
+};
+
+// Configuring and rendering the pie chart
+const ctx = document.getElementById('paymentChart').getContext('2d');
+const paymentChart = new Chart(ctx, {
+  type: 'pie',
+  data: paymentData,
+  options: {
+      responsive: true,
+      plugins: {
+          legend: {
+              display: true,
+              position: 'top',
           },
-          ticks: {
-            color: 'rgba(0,0,0, 0.5)',
+          title: {
+              display: true,
+              text: 'Payment Types Distribution'
+          }
+      }
+  }
+});
+
+menuItems.forEach(item => {
+  item.addEventListener('click', function (event) {
+      event.preventDefault();
+      const selectedMenu = event.target.id;
+
+      // Load the corresponding HTML page into the content area
+      $.ajax({
+          url: `${selectedMenu}.html`,
+          method: 'GET',
+          success: function(data) {
+              contentArea.innerHTML = data; // Load the new content
           },
-        },
-        y: {
-          stacked: true,
-          grid: {
-            display: false,
-          },
-          ticks: {
-            color: 'rgba(0,0,0, 0.5)',
-          },
-        },
-      },
-    },
-  };
-  
-  new mdb.Chart(document.getElementById('bar-chart-horizontal'), dataBarHorizontal, optionsBarHorizontal);
+          error: function(xhr, status, error) {
+              console.error('Error loading page:', error);
+          }
+      });
+  });
+});
